@@ -14,11 +14,13 @@ namespace VolumeMaster
     {
 
         private List<VolumeControl> items;
+        ObservableCollection<VolumeControl> itemSource = new ObservableCollection<VolumeControl>();
         public VolumeOSD(List<VolumeControl> items)
         {
             SystemThemeWatcher.Watch(this);
             InitializeComponent();
             this.items = new List<VolumeControl>(items);
+            VolumeList.ItemsSource = itemSource;
             foreach (var item in items)
             {
                 item.PropertyChanged += VolumeChanged;
@@ -37,14 +39,18 @@ namespace VolumeMaster
 
         private void VolumeChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName != nameof(VolumeControl.Volume)) return;
+            if (e.PropertyName != nameof(VolumeControl.Volume) && e.PropertyName != nameof(VolumeControl.IsMuted)) return;
             Dispatcher.Invoke(new Action(popUp));
         }
 
         private bool popuplate()
         {
             IEnumerable<VolumeControl> activeItems = items.Where(item => item.IsActive);
-            VolumeList.ItemsSource = new ObservableCollection<VolumeControl>(activeItems);
+            itemSource.Clear();
+            foreach (VolumeControl activeItem in activeItems)
+            {
+                itemSource.Add(activeItem);
+            }
             return activeItems.Count() != 0;
         }
 
@@ -57,22 +63,22 @@ namespace VolumeMaster
                 return;
             }
             Win11OSD.hide();
-
             cancel?.Cancel();
+            cancel?.Dispose();
             Left = 10;
             Top = 10;
             Show();
             cancel = new CancellationTokenSource();
             Task.Delay(900, cancel.Token).ContinueWith(x =>
-            {
-                if (x.IsCompletedSuccessfully)
-                {
-                    Dispatcher.Invoke(new Action(() =>
-                    {
-                        Hide();
-                    }));
-                }
-            });
+             {
+                 if (x.IsCompletedSuccessfully)
+                 {
+                     Dispatcher.Invoke(new Action(() =>
+                     {
+                         Hide();
+                     }));
+                 }
+             });
 
         }
 

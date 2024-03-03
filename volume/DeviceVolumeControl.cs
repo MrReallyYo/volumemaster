@@ -40,6 +40,7 @@ namespace VolumeMaster.volume
         private bool DiscoverIfNecessary()
         {
             if (device != null && device.State == DeviceState.Active) return true;
+            device?.Dispose();
             device = null;
 
             MMDeviceEnumerator DevEnum = new MMDeviceEnumerator(Guid.NewGuid());
@@ -51,6 +52,7 @@ namespace VolumeMaster.volume
                 device.AudioEndpointVolume.OnVolumeNotification += (d) =>
                 {
                     notifyVolumeChanged();
+                    notifyMuteChanged();
                 };
             }
 
@@ -77,16 +79,18 @@ namespace VolumeMaster.volume
             {
 
                 float volume = (device?.AudioEndpointVolume?.MasterVolumeLevelScalar ?? 0.0f);
-                return (int)(volume * 100);
+                return (int)Math.Round(volume * 100);
             }
             set
             {
-
                 if (DiscoverIfNecessary())
                 {
-                    float volume = ((float)value) / 100.0f;
-                    float old = device.AudioEndpointVolume.MasterVolumeLevelScalar;
-                    device.AudioEndpointVolume.MasterVolumeLevelScalar = Math.Max(Math.Min(volume, 1.0f), 0.0f);
+                    float old = device.AudioEndpointVolume.MasterVolumeLevelScalar * 100;
+                    float target = Math.Max(Math.Min((float)value, 100.0f), 0.0f);
+                    if (old != target)
+                    {
+                        device.AudioEndpointVolume.MasterVolumeLevelScalar = target / 100.0f;
+                    }
                     if (device.AudioEndpointVolume.MasterVolumeLevelScalar != old)
                     {
                         notifyVolumeChanged();
@@ -101,6 +105,22 @@ namespace VolumeMaster.volume
             {
                 DiscoverIfNecessary();
                 return device?.AudioEndpointVolume?.Mute ?? true;
+            }
+            set
+            {
+                if (DiscoverIfNecessary())
+                {
+                    bool old = device.AudioEndpointVolume.Mute;
+                    if (old != value)
+                    {
+                        device.AudioEndpointVolume.Mute = value;
+                    }
+                    if (device.AudioEndpointVolume.Mute != old)
+                    {
+                        notifyMuteChanged();
+                    }
+
+                }
             }
         }
 

@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-        xmlns:local="clr-namespace:VolumeMaster"
+        xmlns:local="clr-namespace:VolumeMaster" xmlns:conv="clr-namespace:VolumeMaster.converter"
         mc:Ignorable="d"
         ShowInTaskbar="False"
         Topmost="True"
@@ -18,13 +18,10 @@
         ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
         ExtendsContentIntoTitleBar="True"
         Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                 
-                 
-                     d:DataContext="{d:DesignInstance local:VolumeOSD,
-                                     IsDesignTimeCreatable=True}"
-                 
         Title="VolumeOSD">
-
+    <ui:FluentWindow.Resources>
+        <conv:BoolInverter  x:Key="boolInvert"/>
+    </ui:FluentWindow.Resources>
 
     <Grid>
         <ItemsControl Name="VolumeList"  Grid.IsSharedSizeScope="True" Margin="10">
@@ -36,12 +33,36 @@
                             <ColumnDefinition Width="Auto" SharedSizeGroup="Col1" />
                             <ColumnDefinition Width="200" SharedSizeGroup="Col2" />
                             <ColumnDefinition Width="Auto" SharedSizeGroup="Col3" />
-
                         </Grid.ColumnDefinitions>
-                        <ui:SymbolIcon Grid.Column="0" Symbol="{Binding SpeakerIcon}" Margin="10,0,0,0"/>
-                        <ui:TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center" TextAlignment="Left" Margin="10,0"/>
-                        <ProgressBar  Grid.Column="2"  Minimum="0" Maximum="100" Value="{Binding Volume}"  Height="6" VerticalAlignment="Center" Foreground="{DynamicResource AccentTextFillColorTertiaryBrush}" />
-                        <ui:TextBlock  Grid.Column="3"  Text="{Binding Volume}"  VerticalAlignment="Center" TextAlignment="Right" MinWidth="24" Margin="10,0"/>
+                        <ui:SymbolIcon 
+                            Grid.Column="0" 
+                            VerticalAlignment="Center"
+                            Symbol="{Binding SpeakerIcon}"/>
+                        <Label 
+                            Grid.Column="1" 
+                            Padding="10,5"
+                            VerticalAlignment="Center"
+                            HorizontalContentAlignment="Left"
+                            FontWeight="Medium"
+                            Content="{Binding Name}"
+                            IsEnabled="{Binding Path=IsMuted, Converter={StaticResource boolInvert}}"/>
+                        <ProgressBar 
+                            Grid.Column="2"  
+                            Height="6"
+                            VerticalAlignment="Center"
+                            Minimum="0" 
+                            Maximum="100" 
+                            Value="{Binding Volume}" 
+                            IsEnabled="{Binding Path=IsMuted, Converter={StaticResource boolInvert}}" />
+                        <Label 
+                            Grid.Column="3" 
+                            MinWidth="44"
+                            Padding="10,5"
+                            VerticalAlignment="Center"
+                            HorizontalContentAlignment="Right"
+                            FontWeight="Medium"
+                            Content="{Binding Volume}" 
+                            IsEnabled="{Binding Path=IsMuted, Converter={StaticResource boolInvert}}"/>
                     </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>

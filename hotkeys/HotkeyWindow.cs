@@ -51,7 +51,7 @@ namespace VolumeMaster.hotkeys
             new WindowInteropHelper(this).EnsureHandle();
             //RegisterHotKey(handle, 1337, 0x0, 0x14);
             uint mod = (uint)hotkey.Modifier.Sum(mod => ((uint)mod));
-            if (RegisterHotKey(handle, hotkey.HotkeyId, mod, hotkey.Key))
+            if (RegisterHotKey(handle, hotkey.HotkeyId, mod, (int)hotkey.Key))
             {
                 hotkeys[hotkey.HotkeyId] = hotkey;
                 return true;

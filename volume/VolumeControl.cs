@@ -7,7 +7,7 @@ namespace VolumeMaster.volume
         public abstract string Name { get; }
         public abstract int Volume { get; set; }
 
-        public abstract bool IsMuted { get; }
+        public abstract bool IsMuted { get; set; }
 
         public abstract bool IsActive { get; }
 
@@ -17,6 +17,7 @@ namespace VolumeMaster.volume
         {
             notifyNameChanged();
             notifyVolumeChanged();
+            notifyMuteChanged();
         }
 
         protected void notifyNameChanged()
@@ -32,10 +33,19 @@ namespace VolumeMaster.volume
             if (PropertyChanged != null)
             {
                 PropertyChanged(this, new PropertyChangedEventArgs("Volume"));
+                PropertyChanged(this, new PropertyChangedEventArgs("SpeakerIcon"));
+            }
+        }
+
+        protected void notifyMuteChanged()
+        {
+            if (PropertyChanged != null)
+            {
                 PropertyChanged(this, new PropertyChangedEventArgs("IsMuted"));
                 PropertyChanged(this, new PropertyChangedEventArgs("SpeakerIcon"));
             }
         }
+
         static List<String> icons = [
             "SpeakerMute48", "Speaker048", "Speaker148","Speaker248"
             ];

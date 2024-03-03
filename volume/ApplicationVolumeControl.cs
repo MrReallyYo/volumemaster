@@ -32,6 +32,7 @@ namespace VolumeMaster.volume
 
             if (session != null && session.State == AudioSessionState.AudioSessionStateActive) return true;
             bool hadOldSession = session != null;
+            session?.Dispose();
             session = null;
 
             MMDeviceEnumerator deviceEnumerator = new MMDeviceEnumerator(Guid.NewGuid());
@@ -77,12 +78,12 @@ namespace VolumeMaster.volume
                             this.session.OnSimpleVolumeChanged += (s, v, m) =>
                             {
                                 notifyVolumeChanged();
+                                notifyMuteChanged();
                             };
                         }
                     }
                 }
             }
-
             if (hadOldSession || session != null)
             {
                 notifyChanged();
@@ -108,16 +109,19 @@ namespace VolumeMaster.volume
             {
 
                 float volume = (session?.SimpleAudioVolume?.MasterVolume ?? 0.0f);
-                return (int)(volume * 100);
+                return (int)Math.Round(volume * 100);
             }
             set
             {
 
                 if (DiscoverIfNecessary())
                 {
-                    float volume = ((float)value) / 100.0f;
-                    float old = session.SimpleAudioVolume.MasterVolume;
-                    session.SimpleAudioVolume.MasterVolume = Math.Max(Math.Min(volume, 1.0f), 0.0f);
+                    float old = session.SimpleAudioVolume.MasterVolume * 100.0f;
+                    float target = Math.Max(Math.Min((float)value, 100.0f), 0.0f);
+                    if (old != target)
+                    {
+                        session.SimpleAudioVolume.MasterVolume = target / 100.0f;
+                    }
                     if (session.SimpleAudioVolume.MasterVolume != old)
                     {
                         notifyVolumeChanged();
@@ -131,6 +135,22 @@ namespace VolumeMaster.volume
             {
                 DiscoverIfNecessary();
                 return session?.SimpleAudioVolume?.Mute ?? true;
+            }
+            set
+            {
+                if (DiscoverIfNecessary())
+                {
+                    bool old = session.SimpleAudioVolume.Mute;
+                    if (old != value)
+                    {
+                        session.SimpleAudioVolume.Mute = value;
+                    }
+                    if (session.SimpleAudioVolume.Mute != old)
+                    {
+                        notifyMuteChanged();
+                    }
+
+                }
             }
         }
 
