@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "VolumeMaster": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    }
+  }
+}
