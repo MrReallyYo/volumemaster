@@ -93,20 +93,15 @@ namespace VolumeMaster.volume
 
                     this.session = session;
                     this.session.OnSimpleVolumeChanged += Session_OnSimpleVolumeChanged;
-                    goto found;
+                    break;
                 }
 
             }
-        found:
 
             if (hadOldSession || session != null)
             {
                 notifyChanged();
             }
-
-
-
-
             return session != null;
         }
 

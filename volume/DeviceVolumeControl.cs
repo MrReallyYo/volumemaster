@@ -11,7 +11,7 @@ namespace VolumeMaster.volume
             Multimeda
         }
 
-
+        private DeviceProvider deviceProvider;
         private Device deviceType;
         private string? customDisplayName;
 
@@ -30,20 +30,34 @@ namespace VolumeMaster.volume
             }
         }
 
-        public DeviceVolumeControl(Device deviceType = Device.Multimeda, string? customDisplayName = null)
+        public DeviceVolumeControl(DeviceProvider deviceProvider, Device deviceType = Device.Multimeda, string? customDisplayName = null)
         {
+            this.deviceProvider = deviceProvider;
             this.deviceType = deviceType;
             this.customDisplayName = customDisplayName;
+
+            deviceProvider.ClearSessions += DeviceProvider_ClearSessions;
+            deviceProvider.RenewSessions += DeviceProvider_RenewSessions;
+
             DiscoverIfNecessary();
         }
+
+        private void DeviceProvider_RenewSessions(object? sender)
+        {
+            DiscoverIfNecessary();
+        }
+
+        private void DeviceProvider_ClearSessions(object? sender)
+        {
+            device = null;
+        }
+
 
         private bool DiscoverIfNecessary()
         {
             if (device != null && device.State == DeviceState.Active) return true;
             device = null;
-
-            MMDeviceEnumerator DevEnum = new MMDeviceEnumerator(Guid.NewGuid());
-            device = DevEnum.GetDefaultAudioEndpoint(DataFlow.Render, role);
+            device = deviceProvider.Device(role);
             notifyChanged();
 
             if (device != null && device.AudioEndpointVolume != null)

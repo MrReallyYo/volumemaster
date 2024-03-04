@@ -1,4 +1,5 @@
 ﻿using CoreAudio;
+using System.Windows;
 
 namespace VolumeMaster.volume
 {
@@ -11,11 +12,37 @@ namespace VolumeMaster.volume
         public event RenewSessionsHandler? RenewSessions;
 
 
-        private List<MMDevice> devices;
-        private List<AudioSessionManager2> manager;
-        public List<AudioSessionControl2> sessions;
+        private MMDeviceCollection? _devices = null;
+        public List<MMDevice> devices = [];
+        private List<AudioSessionManager2> manager = [];
+        public List<AudioSessionControl2> sessions = [];
 
-        public void refresh()
+
+        public DeviceProvider()
+        {
+            refresh();
+        }
+
+        public MMDevice? Device(Role role)
+        {
+            if (_devices == null) return null;
+            string defaultDevice = new MMDeviceEnumerator(Guid.NewGuid()).GetDefaultAudioEndpoint(DataFlow.Render, role).ID;
+            foreach (MMDevice device in _devices)
+            {
+                try
+                {
+                    if (device.ID == defaultDevice) return device;
+                }
+                catch (Exception ex)
+                {
+                    ex.ToString();
+                }
+            }
+            return null;
+        }
+
+
+        private void _refresh()
         {
             if (ClearSessions != null) ClearSessions(this);
 
@@ -24,7 +51,8 @@ namespace VolumeMaster.volume
             List<AudioSessionControl2> sessions = new List<AudioSessionControl2>();
 
             MMDeviceEnumerator deviceEnumerator = new MMDeviceEnumerator(Guid.NewGuid());
-            foreach (MMDevice device in deviceEnumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active))
+            MMDeviceCollection _devices = deviceEnumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active);
+            foreach (MMDevice device in _devices)
             {
                 device.AudioSessionManager2?.RefreshSessions();
                 if (device.AudioSessionManager2 == null) continue;
@@ -40,11 +68,29 @@ namespace VolumeMaster.volume
                 }
             }
 
+            this._devices = _devices;
             this.devices = devices;
             this.manager = manager;
             this.sessions = sessions;
 
             if (RenewSessions != null) RenewSessions(this);
+        }
+
+
+        private CancellationTokenSource cancel;
+        void refresh()
+        {
+            cancel?.Cancel();
+            cancel?.Dispose();
+            cancel = new CancellationTokenSource();
+            Task.Run(() =>
+            {
+                Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    _refresh();
+                }));
+            }, cancel.Token);
+
         }
 
         private void Session_OnStateChanged(object sender, AudioSessionState newState)
