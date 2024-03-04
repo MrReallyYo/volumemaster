@@ -14,8 +14,7 @@ namespace VolumeMaster
     /// </summary>
     public partial class App : System.Windows.Application
     {
-
-        DeviceProvider deviceProvider;
+        VolumeProvider volumeProvider;
         HotkeyWindow hotkeyWindow;
         VolumeOSD osd;
         TaskbarIcon tbi = new TaskbarIcon();
@@ -24,13 +23,13 @@ namespace VolumeMaster
         protected override void OnStartup(StartupEventArgs e)
         {
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
-            deviceProvider = new DeviceProvider();
+            volumeProvider = new VolumeProvider(System.Windows.Application.Current.Dispatcher);
             hotkeyWindow = new HotkeyWindow();
 
-            VolumeControl system = new DeviceVolumeControl(deviceProvider, DeviceVolumeControl.Device.Multimeda);
-            VolumeControl spotify = new ApplicationVolumeControl(deviceProvider, "spotify");
-            VolumeControl firefox = new ApplicationVolumeControl(deviceProvider, "firefox");
-            //VolumeControl firefox = new ApplicationVolumeControl(executableName: "firefox");
+            VolumeControl system = new VolumeControl(volumeProvider, "topping");
+            VolumeControl spotify = new VolumeControl(volumeProvider, "spotify");
+            VolumeControl firefox = new VolumeControl(volumeProvider, "firefox");
+
             osd = new VolumeOSD([system, spotify, firefox]);
 
 

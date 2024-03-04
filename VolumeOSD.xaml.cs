@@ -40,7 +40,7 @@ namespace VolumeMaster
         private void VolumeChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName != nameof(VolumeControl.Volume) && e.PropertyName != nameof(VolumeControl.IsMuted)) return;
-            Dispatcher.Invoke(new Action(popUp));
+            Dispatcher.Invoke(popUp);
         }
 
         private bool popuplate()
@@ -54,7 +54,7 @@ namespace VolumeMaster
             return activeItems.Count() != 0;
         }
 
-        CancellationTokenSource? cancel;
+        Timer timer = null;
         private void popUp()
         {
             if (!popuplate())
@@ -63,22 +63,26 @@ namespace VolumeMaster
                 return;
             }
             Win11OSD.hide();
-            cancel?.Cancel();
-            cancel?.Dispose();
+
+            timer?.Dispose();
+
             Left = 10;
             Top = 10;
             Show();
-            cancel = new CancellationTokenSource();
-            Task.Delay(900, cancel.Token).ContinueWith(x =>
+
+
+
+            timer = new Timer((obj) =>
              {
-                 if (x.IsCompletedSuccessfully)
+                 timer.Dispose();
+                 Dispatcher.Invoke(new Action(() =>
                  {
-                     Dispatcher.Invoke(new Action(() =>
-                     {
-                         Hide();
-                     }));
-                 }
-             });
+                     Hide();
+                 }));
+             }, null, 1000, Timeout.Infinite);
+
+
+
 
         }
 
