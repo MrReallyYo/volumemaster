@@ -14,6 +14,8 @@ namespace VolumeMaster
     /// </summary>
     public partial class App : System.Windows.Application
     {
+
+        DeviceProvider deviceProvider = new DeviceProvider();
         HotkeyWindow hotkeyWindow;
         VolumeOSD osd;
         TaskbarIcon tbi = new TaskbarIcon();
@@ -24,12 +26,13 @@ namespace VolumeMaster
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
             hotkeyWindow = new HotkeyWindow();
 
-
+            deviceProvider.refresh();
 
             VolumeControl system = new DeviceVolumeControl(DeviceVolumeControl.Device.Multimeda);
-            VolumeControl spotify = new ApplicationVolumeControl("spotify");
-
-            osd = new VolumeOSD([system, spotify]);
+            VolumeControl spotify = new ApplicationVolumeControl(deviceProvider, "spotify");
+            VolumeControl firefox = new ApplicationVolumeControl(deviceProvider, "firefox");
+            //VolumeControl firefox = new ApplicationVolumeControl(executableName: "firefox");
+            osd = new VolumeOSD([system, spotify, firefox]);
 
 
             tbi.Icon = new Icon(GetResourceStream(new Uri("pack://application:,,,/res/ico/tray.ico")).Stream);

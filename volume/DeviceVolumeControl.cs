@@ -40,7 +40,6 @@ namespace VolumeMaster.volume
         private bool DiscoverIfNecessary()
         {
             if (device != null && device.State == DeviceState.Active) return true;
-            device?.Dispose();
             device = null;
 
             MMDeviceEnumerator DevEnum = new MMDeviceEnumerator(Guid.NewGuid());
