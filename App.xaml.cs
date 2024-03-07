@@ -92,8 +92,7 @@ namespace VolumeMaster
 
             hotkeyWindow.register(new Hotkey
             {
-                Modifier = [ModifierKeys.Shift],
-                Key = Keys.MediaPlayPause,
+                Key = Keys.F16,
                 Handler = (hotkey) =>
                 {
                     spotify.IsMuted = !spotify.IsMuted;
@@ -103,7 +102,6 @@ namespace VolumeMaster
 
             hotkeyWindow.register(new Hotkey
             {
-                Modifier = [ModifierKeys.Shift],
                 Key = Keys.F14,
                 Handler = (hotkey) =>
                 {
@@ -114,7 +112,6 @@ namespace VolumeMaster
 
             hotkeyWindow.register(new Hotkey
             {
-                Modifier = [ModifierKeys.Shift],
                 Key = Keys.F15,
                 Handler = (hotkey) =>
                 {
@@ -124,7 +121,7 @@ namespace VolumeMaster
 
             hotkeyWindow.register(new Hotkey
             {
-                Modifier = [ModifierKeys.Shift, ModifierKeys.Control],
+                Modifier = [ModifierKeys.Alt],
                 Key = Keys.F14,
                 Handler = (hotkey) =>
                 {
@@ -135,13 +132,70 @@ namespace VolumeMaster
 
             hotkeyWindow.register(new Hotkey
             {
-                Modifier = [ModifierKeys.Shift, ModifierKeys.Control],
+                Modifier = [ModifierKeys.Alt],
                 Key = Keys.F15,
                 Handler = (hotkey) =>
                 {
                     spotify.VolumeStepUp(5);
                 }
             });
+
+
+
+            hotkeyWindow.register(new Hotkey
+            {
+                Modifier = [ModifierKeys.Control],
+                Key = Keys.F16,
+                Handler = (hotkey) =>
+                {
+                    firefox.IsMuted = !firefox.IsMuted;
+                }
+            });
+
+            hotkeyWindow.register(new Hotkey
+            {
+                Modifier = [ModifierKeys.Control],
+                Key = Keys.F14,
+                Handler = (hotkey) =>
+                {
+                    firefox.VolumeStepDown(2);
+                }
+            });
+
+
+            hotkeyWindow.register(new Hotkey
+            {
+                Modifier = [ModifierKeys.Control],
+                Key = Keys.F15,
+                Handler = (hotkey) =>
+                {
+                    firefox.VolumeStepUp(2);
+                }
+            });
+
+
+            hotkeyWindow.register(new Hotkey
+            {
+                Modifier = [ModifierKeys.Control, ModifierKeys.Alt],
+                Key = Keys.F14,
+                Handler = (hotkey) =>
+                {
+                    firefox.VolumeStepDown(5);
+                }
+            });
+
+
+            hotkeyWindow.register(new Hotkey
+            {
+                Modifier = [ModifierKeys.Control, ModifierKeys.Alt],
+                Key = Keys.F15,
+                Handler = (hotkey) =>
+                {
+                    firefox.VolumeStepUp(5);
+                }
+            });
+
+
 
 
             this.RegisterCleanup();

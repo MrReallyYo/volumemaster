@@ -39,16 +39,10 @@ namespace VolumeMaster.volume
 
         private void AudioEndpointVolume_OnVolumeNotification(AudioVolumeNotificationData data)
         {
-            if (_volume != data.MasterVolume)
-            {
-                _volume = data.MasterVolume;
-                notifyVolumeChanged();
-            }
-            if (_muted != data.Muted)
-            {
-                _muted = data.Muted;
-                notifyMuteChanged();
-            }
+            _volume = data.MasterVolume;
+            _muted = data.Muted;
+            notifyVolumeChanged();
+            notifyIsMutedChanged();
         }
 
         override public string Identifier
@@ -80,6 +74,7 @@ namespace VolumeMaster.volume
                 dispatcher.Invoke(() =>
                 {
                     device.AudioEndpointVolume.MasterVolumeLevelScalar = value;
+                    notifyVolumeChanged();
                 });
             }
         }
@@ -96,6 +91,7 @@ namespace VolumeMaster.volume
                 dispatcher.Invoke(() =>
                 {
                     device.AudioEndpointVolume.Mute = value;
+                    notifyIsMutedChanged();
                 });
             }
         }

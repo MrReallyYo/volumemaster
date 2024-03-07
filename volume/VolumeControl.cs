@@ -90,7 +90,9 @@ namespace VolumeMaster.volume
                     notifyVolumeChanged();
                     break;
 
-
+                case nameof(AVolume.IsMuted):
+                    notifyIsMutedChanged();
+                    break;
                 default: break;
             }
 
@@ -121,7 +123,6 @@ namespace VolumeMaster.volume
                     if (old != target)
                     {
                         volume.Volume = target / 100.0f;
-                        notifyVolumeChanged();
                     }
                 }
             }
@@ -160,7 +161,7 @@ namespace VolumeMaster.volume
             }
         }
 
-        protected void notifyMuteChanged()
+        protected void notifyIsMutedChanged()
         {
             if (PropertyChanged != null)
             {

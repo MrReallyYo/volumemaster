@@ -1,9 +1,13 @@
 ﻿using System.ComponentModel;
+using VolumeMaster.util;
 
 namespace VolumeMaster.volume
 {
     public abstract class AVolume : INotifyPropertyChanged
     {
+
+        private Throttle volumeT = new Throttle();
+        private Throttle isMutedT = new Throttle();
         public abstract string Identifier { get; }
 
         public abstract string Name { get; }
@@ -14,18 +18,24 @@ namespace VolumeMaster.volume
 
         protected void notifyVolumeChanged()
         {
-            if (PropertyChanged != null)
+            volumeT.Dispatch(() =>
             {
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(Volume)));
-            }
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs(nameof(Volume)));
+                }
+            });
         }
 
-        protected void notifyMuteChanged()
+        protected void notifyIsMutedChanged()
         {
-            if (PropertyChanged != null)
+            isMutedT.Dispatch(() =>
             {
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsMuted)));
-            }
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsMuted)));
+                }
+            });
         }
     }
 }

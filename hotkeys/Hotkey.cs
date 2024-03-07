@@ -13,8 +13,8 @@ namespace VolumeMaster.hotkeys
         }
 
 
-        public int HotkeyId = NextHotkeyId();
-        public required List<ModifierKeys> Modifier { get; init; }
+        public int HotkeyId { get; init; } = NextHotkeyId();
+        public List<ModifierKeys> Modifier { get; init; } = [ModifierKeys.None];
         public required Keys Key { get; init; }
 
         public required Action<Hotkey> Handler { get; init; }

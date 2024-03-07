@@ -40,16 +40,10 @@ namespace VolumeMaster.volume
 
         private void Session_OnSimpleVolumeChanged(object sender, float newVolume, bool newMute)
         {
-            if (_volume != newVolume)
-            {
-                _volume = newVolume;
-                notifyVolumeChanged();
-            }
-            if (_muted != newMute)
-            {
-                _muted = newMute;
-                notifyMuteChanged();
-            }
+            _volume = newVolume;
+            _muted = newMute;
+            notifyVolumeChanged();
+            notifyIsMutedChanged();
         }
 
         public override string Identifier
@@ -81,6 +75,7 @@ namespace VolumeMaster.volume
                 dispatcher.Invoke(() =>
                 {
                     session.SimpleAudioVolume.MasterVolume = value;
+                    notifyVolumeChanged();
                 });
             }
         }
@@ -97,6 +92,7 @@ namespace VolumeMaster.volume
                 dispatcher.Invoke(() =>
                 {
                     session.SimpleAudioVolume.Mute = value;
+                    notifyIsMutedChanged();
                 });
             }
         }
