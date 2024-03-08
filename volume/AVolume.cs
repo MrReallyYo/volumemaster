@@ -13,7 +13,7 @@ namespace VolumeMaster.volume
         public abstract string Name { get; }
         public abstract string Name2 { get; }
 
-        public abstract float Volume { get; set; }
+        public abstract double Volume { get; set; }
         public abstract bool IsMuted { get; set; }
 
         public abstract bool IsActive { get; }

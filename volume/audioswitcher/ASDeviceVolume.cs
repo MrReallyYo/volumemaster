@@ -3,16 +3,21 @@ using AudioSwitcher.AudioApi.Observables;
 
 namespace VolumeMaster.volume.coreaudio2
 {
-    public class DeviceVolume : AVolume
+    public class ASDeviceVolume : AVolume
     {
         private IDevice device;
         private List<IDisposable> obs = [];
-        public DeviceVolume(IDevice device)
+        public ASDeviceVolume(IDevice device)
         {
             this.device = device;
 
-            obs.Add(device.VolumeChanged.Subscribe((x) => { notifyVolumeChanged(); }));
-            obs.Add(device.MuteChanged.Subscribe((x) => { notifyIsMutedChanged(); }));
+            obs.Add(device.VolumeChanged.Subscribe((_) => { notifyVolumeChanged(); }));
+            obs.Add(device.MuteChanged.Subscribe((_) => { notifyIsMutedChanged(); }));
+        }
+
+        ~ASDeviceVolume()
+        {
+            foreach (var obs in this.obs) { obs.Dispose(); }
         }
 
         public override string Identifier
@@ -30,9 +35,9 @@ namespace VolumeMaster.volume.coreaudio2
             get { return device.FullName; }
         }
 
-        public override float Volume
+        public override double Volume
         {
-            get { return (float)device.GetVolumeAsync().Result; }
+            get { return device.GetVolumeAsync().Result; }
             set { device.SetVolumeAsync(value); }
         }
         public override bool IsMuted

@@ -24,7 +24,7 @@ namespace VolumeMaster
         protected override void OnStartup(StartupEventArgs e)
         {
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
-            volumeProvider = new VolumeProviderCoreAudio2();
+            volumeProvider = new ASVolumeProvider();
             hotkeyWindow = new HotkeyWindow();
 
             VolumeControl system = new VolumeControl(volumeProvider, "topping");

@@ -114,15 +114,15 @@ namespace VolumeMaster.volume
         {
             get
             {
-                float vol = (volume?.Volume ?? 0.0f);
+                double vol = (volume?.Volume ?? 0.0);
                 return (int)Math.Round(vol);
             }
             set
             {
                 if (volume != null)
                 {
-                    float old = volume.Volume;
-                    float target = Math.Max(Math.Min((float)value, 100.0f), 0.0f);
+                    double old = volume.Volume;
+                    double target = Math.Max(Math.Min((float)value, 100.0), 0.0);
                     if (old != target)
                     {
                         volume.Volume = target;

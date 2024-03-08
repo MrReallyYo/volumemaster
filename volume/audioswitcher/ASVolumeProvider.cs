@@ -7,7 +7,7 @@ using System.Collections.Concurrent;
 
 namespace VolumeMaster.volume.coreaudio2
 {
-    public class VolumeProviderCoreAudio2 : VolumeProvider
+    public class ASVolumeProvider : VolumeProvider
 
     {
         public IEnumerable<AVolume> Volumes
@@ -27,7 +27,7 @@ namespace VolumeMaster.volume.coreaudio2
         private IDisposable deviceChanged;
         private ConcurrentDictionary<string, List<IDisposable>> sessionChanged = new ConcurrentDictionary<string, List<IDisposable>>();
         private ConcurrentDictionary<string, AVolume> vols = new ConcurrentDictionary<string, AVolume>();
-        public VolumeProviderCoreAudio2()
+        public ASVolumeProvider()
         {
             controller = new CoreAudioController();
 
@@ -58,10 +58,24 @@ namespace VolumeMaster.volume.coreaudio2
             });
         }
 
+        ~ASVolumeProvider()
+        {
+            deviceChanged?.Dispose();
+            foreach (var obss in sessionChanged.Values)
+            {
+                foreach (var obs in obss)
+                {
+                    obs.Dispose();
+                }
+            }
+            controller.Dispose();
+        }
+
+
         private void addDevice(IDevice device)
         {
             removeDevice(device);
-            DeviceVolume addedDevice = new DeviceVolume(device);
+            ASDeviceVolume addedDevice = new ASDeviceVolume(device);
             vols[device.Id.ToString()] = addedDevice;
             added(addedDevice);
 
@@ -96,7 +110,7 @@ namespace VolumeMaster.volume.coreaudio2
         private void addSession(IAudioSession session)
         {
             removeSession(session.Id);
-            SessionVolume addedSession = new SessionVolume(session);
+            ASSessionVolume addedSession = new ASSessionVolume(session);
             vols[session.Id] = addedSession;
             added(addedSession);
         }

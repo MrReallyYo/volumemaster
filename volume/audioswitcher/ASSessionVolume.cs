@@ -4,18 +4,22 @@ using System.Diagnostics;
 
 namespace VolumeMaster.volume.coreaudio2
 {
-    public class SessionVolume : AVolume
+    public class ASSessionVolume : AVolume
     {
         private IAudioSession session;
         private List<IDisposable> obs = [];
-        public SessionVolume(IAudioSession session)
+        public ASSessionVolume(IAudioSession session)
         {
             this.session = session;
-
-
-            obs.Add(session.VolumeChanged.Subscribe((x) => { notifyVolumeChanged(); }));
-            obs.Add(session.MuteChanged.Subscribe((x) => { notifyIsMutedChanged(); }));
+            obs.Add(session.VolumeChanged.Subscribe((_) => { notifyVolumeChanged(); }));
+            obs.Add(session.MuteChanged.Subscribe((_) => { notifyIsMutedChanged(); }));
         }
+
+        ~ASSessionVolume()
+        {
+            foreach (var obs in this.obs) { obs.Dispose(); }
+        }
+
 
         public override string Identifier
         {
@@ -32,9 +36,9 @@ namespace VolumeMaster.volume.coreaudio2
             get { return Process.GetProcessById(session.ProcessId).ProcessName; }
         }
 
-        public override float Volume
+        public override double Volume
         {
-            get { return (float)session.GetVolumeAsync().Result; }
+            get { return session.GetVolumeAsync().Result; }
             set { session.SetVolumeAsync(value); }
         }
         public override bool IsMuted
