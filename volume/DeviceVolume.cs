@@ -10,6 +10,7 @@ namespace VolumeMaster.volume
 
         private string _id;
         private string _name;
+        private string _name2;
         private float _volume;
         private bool _muted;
 
@@ -29,7 +30,8 @@ namespace VolumeMaster.volume
                 }
 
                 this.device = device;
-                this._name = device.DeviceInterfaceFriendlyName ?? device.DeviceFriendlyName;
+                this._name = device.DeviceInterfaceFriendlyName ?? "";
+                this._name2 = device.DeviceFriendlyName ?? "";
                 this._volume = device.AudioEndpointVolume.MasterVolumeLevelScalar;
                 this._muted = device.AudioEndpointVolume.Mute;
                 this.device.AudioEndpointVolume.OnVolumeNotification -= AudioEndpointVolume_OnVolumeNotification;
@@ -58,6 +60,14 @@ namespace VolumeMaster.volume
             get
             {
                 return _name;
+            }
+        }
+
+        override public string Name2
+        {
+            get
+            {
+                return _name2;
             }
         }
 

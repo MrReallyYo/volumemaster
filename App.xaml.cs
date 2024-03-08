@@ -28,9 +28,10 @@ namespace VolumeMaster
 
             VolumeControl system = new VolumeControl(volumeProvider, "topping");
             VolumeControl spotify = new VolumeControl(volumeProvider, "spotify");
+            VolumeControl tidal = new VolumeControl(volumeProvider, "tidalplayer");
             VolumeControl firefox = new VolumeControl(volumeProvider, "firefox");
 
-            osd = new VolumeOSD([system, spotify, firefox]);
+            osd = new VolumeOSD([system, spotify, tidal, firefox]);
 
 
             tbi.Icon = new Icon(GetResourceStream(new Uri("pack://application:,,,/res/ico/tray.ico")).Stream);
@@ -96,6 +97,7 @@ namespace VolumeMaster
                 Handler = (hotkey) =>
                 {
                     spotify.IsMuted = !spotify.IsMuted;
+                    tidal.IsMuted = !tidal.IsMuted;
                 }
             });
 
@@ -106,6 +108,7 @@ namespace VolumeMaster
                 Handler = (hotkey) =>
                 {
                     spotify.VolumeStepDown(2);
+                    tidal.VolumeStepDown(2);
                 }
             });
 
@@ -116,6 +119,7 @@ namespace VolumeMaster
                 Handler = (hotkey) =>
                 {
                     spotify.VolumeStepUp(2);
+                    tidal.VolumeStepUp(2);
                 }
             });
 
@@ -126,6 +130,7 @@ namespace VolumeMaster
                 Handler = (hotkey) =>
                 {
                     spotify.VolumeStepDown(5);
+                    tidal.VolumeStepDown(5);
                 }
             });
 
@@ -137,6 +142,7 @@ namespace VolumeMaster
                 Handler = (hotkey) =>
                 {
                     spotify.VolumeStepUp(5);
+                    tidal.VolumeStepUp(5);
                 }
             });
 

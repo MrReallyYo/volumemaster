@@ -55,7 +55,7 @@ namespace VolumeMaster.volume
         private void VolumeProvider_VolumeAdded(object? sender, AVolume volume)
         {
             if (this.volume != null) return;
-            if (volume.Name.ToLower().Contains(searchName))
+            if (volume.Name.ToLower().Contains(searchName) || volume.Name2.ToLower().Contains(searchName))
             {
                 this.volume = volume;
             }
@@ -103,7 +103,10 @@ namespace VolumeMaster.volume
         {
             get
             {
-                return customDisplayName ?? volume?.Name ?? "";
+                if (!String.IsNullOrEmpty(customDisplayName)) return customDisplayName;
+                if (!String.IsNullOrEmpty(volume.Name)) return volume.Name;
+                if (!String.IsNullOrEmpty(volume.Name2)) return volume.Name2;
+                return "-";
             }
         }
 

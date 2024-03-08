@@ -1,4 +1,5 @@
 ﻿using CoreAudio;
+using System.Diagnostics;
 
 namespace VolumeMaster.volume
 {
@@ -9,6 +10,7 @@ namespace VolumeMaster.volume
 
         private string _id;
         private string _name;
+        private string _name2;
         private float _volume;
         private bool _muted;
 
@@ -31,6 +33,7 @@ namespace VolumeMaster.volume
                 this.session = session;
                 this._id = session.SessionIdentifier;
                 this._name = session.DisplayName;
+                this._name2 = Process.GetProcessById((int)session.ProcessID).ProcessName;
                 this._volume = session.SimpleAudioVolume.MasterVolume;
                 this._muted = session.SimpleAudioVolume.Mute;
                 this.session.OnSimpleVolumeChanged -= Session_OnSimpleVolumeChanged;
@@ -61,6 +64,14 @@ namespace VolumeMaster.volume
                 return _name;
             }
         }
+        override public string Name2
+        {
+            get
+            {
+                return _name2;
+            }
+        }
+
 
         public override float Volume
         {

@@ -1,6 +1,6 @@
 ﻿namespace VolumeMaster.util
 {
-    class Throttle(long interval = 4)
+    class Throttle(long interval = 10)
     {
 
         private Timer timer = null;
