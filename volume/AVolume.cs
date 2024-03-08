@@ -16,6 +16,9 @@ namespace VolumeMaster.volume
         public abstract float Volume { get; set; }
         public abstract bool IsMuted { get; set; }
 
+        public abstract bool IsActive { get; }
+
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         protected void notifyVolumeChanged()

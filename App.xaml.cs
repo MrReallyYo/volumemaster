@@ -6,6 +6,7 @@ using System.Windows.Input;
 using Test.src;
 using VolumeMaster.hotkeys;
 using VolumeMaster.volume;
+using VolumeMaster.volume.coreaudio2;
 
 namespace VolumeMaster
 {
@@ -23,7 +24,7 @@ namespace VolumeMaster
         protected override void OnStartup(StartupEventArgs e)
         {
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
-            volumeProvider = new VolumeProvider(System.Windows.Application.Current.Dispatcher);
+            volumeProvider = new VolumeProviderCoreAudio2();
             hotkeyWindow = new HotkeyWindow();
 
             VolumeControl system = new VolumeControl(volumeProvider, "topping");

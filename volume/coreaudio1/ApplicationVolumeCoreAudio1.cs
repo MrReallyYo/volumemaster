@@ -1,9 +1,9 @@
 ﻿using CoreAudio;
 using System.Diagnostics;
 
-namespace VolumeMaster.volume
+namespace VolumeMaster.volume.coreaudio1
 {
-    public class ApplicationVolume : AVolume
+    public class ApplicationVolumeCoreAudio1 : AVolume
     {
         private DispatchIfNecessaryDispatcher dispatcher;
         private AudioSessionControl2 session;
@@ -13,9 +13,9 @@ namespace VolumeMaster.volume
         private string _name2;
         private float _volume;
         private bool _muted;
+        public override bool IsActive => true;
 
-
-        public ApplicationVolume(DispatchIfNecessaryDispatcher dispatcher, AudioSessionControl2 session)
+        public ApplicationVolumeCoreAudio1(DispatchIfNecessaryDispatcher dispatcher, AudioSessionControl2 session)
         {
             this.dispatcher = dispatcher;
             updateSession(session);
@@ -31,11 +31,11 @@ namespace VolumeMaster.volume
                 }
 
                 this.session = session;
-                this._id = session.SessionIdentifier;
-                this._name = session.DisplayName;
-                this._name2 = Process.GetProcessById((int)session.ProcessID).ProcessName;
-                this._volume = session.SimpleAudioVolume.MasterVolume;
-                this._muted = session.SimpleAudioVolume.Mute;
+                _id = session.SessionIdentifier;
+                _name = session.DisplayName;
+                _name2 = Process.GetProcessById((int)session.ProcessID).ProcessName;
+                _volume = session.SimpleAudioVolume.MasterVolume;
+                _muted = session.SimpleAudioVolume.Mute;
                 this.session.OnSimpleVolumeChanged -= Session_OnSimpleVolumeChanged;
                 this.session.OnSimpleVolumeChanged += Session_OnSimpleVolumeChanged;
             });

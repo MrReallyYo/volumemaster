@@ -1,8 +1,8 @@
 ﻿using CoreAudio;
 
-namespace VolumeMaster.volume
+namespace VolumeMaster.volume.coreaudio1
 {
-    public class DeviceVolume : AVolume
+    public class DeviceVolumCorAudio1e : AVolume
     {
 
         private DispatchIfNecessaryDispatcher dispatcher;
@@ -13,8 +13,8 @@ namespace VolumeMaster.volume
         private string _name2;
         private float _volume;
         private bool _muted;
-
-        public DeviceVolume(DispatchIfNecessaryDispatcher dispatcher, MMDevice device)
+        public override bool IsActive => true;
+        public DeviceVolumCorAudio1e(DispatchIfNecessaryDispatcher dispatcher, MMDevice device)
         {
             this.dispatcher = dispatcher;
             updateDevice(device);
@@ -30,10 +30,10 @@ namespace VolumeMaster.volume
                 }
 
                 this.device = device;
-                this._name = device.DeviceInterfaceFriendlyName ?? "";
-                this._name2 = device.DeviceFriendlyName ?? "";
-                this._volume = device.AudioEndpointVolume.MasterVolumeLevelScalar;
-                this._muted = device.AudioEndpointVolume.Mute;
+                _name = device.DeviceInterfaceFriendlyName ?? "";
+                _name2 = device.DeviceFriendlyName ?? "";
+                _volume = device.AudioEndpointVolume.MasterVolumeLevelScalar;
+                _muted = device.AudioEndpointVolume.Mute;
                 this.device.AudioEndpointVolume.OnVolumeNotification -= AudioEndpointVolume_OnVolumeNotification;
                 this.device.AudioEndpointVolume.OnVolumeNotification += AudioEndpointVolume_OnVolumeNotification;
             });

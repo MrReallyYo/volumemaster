@@ -115,17 +115,17 @@ namespace VolumeMaster.volume
             get
             {
                 float vol = (volume?.Volume ?? 0.0f);
-                return (int)Math.Round(vol * 100);
+                return (int)Math.Round(vol);
             }
             set
             {
                 if (volume != null)
                 {
-                    float old = volume.Volume * 100.0f;
+                    float old = volume.Volume;
                     float target = Math.Max(Math.Min((float)value, 100.0f), 0.0f);
                     if (old != target)
                     {
-                        volume.Volume = target / 100.0f;
+                        volume.Volume = target;
                     }
                 }
             }
@@ -151,13 +151,13 @@ namespace VolumeMaster.volume
         {
             get
             {
-                return volume != null;
+                return volume?.IsActive ?? false;
             }
         }
 
         protected void notifyVolumeChanged()
         {
-            if (PropertyChanged != null)
+            if (IsActive && PropertyChanged != null)
             {
                 PropertyChanged(this, new PropertyChangedEventArgs("Volume"));
                 PropertyChanged(this, new PropertyChangedEventArgs("SpeakerIcon"));
@@ -166,7 +166,7 @@ namespace VolumeMaster.volume
 
         protected void notifyIsMutedChanged()
         {
-            if (PropertyChanged != null)
+            if (IsActive && PropertyChanged != null)
             {
                 PropertyChanged(this, new PropertyChangedEventArgs("IsMuted"));
                 PropertyChanged(this, new PropertyChangedEventArgs("SpeakerIcon"));
