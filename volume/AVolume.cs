@@ -8,6 +8,8 @@ namespace VolumeMaster.volume
 
         private Throttle volumeT = new Throttle();
         private Throttle isMutedT = new Throttle();
+        private Throttle isActiveT = new Throttle();
+
         public abstract string Identifier { get; }
 
         public abstract string Name { get; }
@@ -39,6 +41,17 @@ namespace VolumeMaster.volume
                 if (PropertyChanged != null)
                 {
                     PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsMuted)));
+                }
+            });
+        }
+
+        protected void notifyIsActiveChanged()
+        {
+            isActiveT.Dispatch(() =>
+            {
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsActive)));
                 }
             });
         }

@@ -13,6 +13,7 @@ namespace VolumeMaster.volume.coreaudio2
             this.session = session;
             obs.Add(session.VolumeChanged.Subscribe((_) => { notifyVolumeChanged(); }));
             obs.Add(session.MuteChanged.Subscribe((_) => { notifyIsMutedChanged(); }));
+            obs.Add(session.StateChanged.Subscribe((_) => { notifyIsActiveChanged(); }));
         }
 
         ~ASSessionVolume()

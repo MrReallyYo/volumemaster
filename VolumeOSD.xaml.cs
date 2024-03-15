@@ -45,23 +45,22 @@ namespace VolumeMaster
 
         private bool popuplate()
         {
-            IEnumerable<VolumeControl> activeItems = items.Where(item => item.IsActive);
             itemSource.Clear();
-            foreach (VolumeControl activeItem in activeItems)
+            foreach (VolumeControl activeItem in items)
             {
                 itemSource.Add(activeItem);
             }
-            return activeItems.Count() != 0;
+            return itemSource.Count() != 0;
         }
 
         Timer timer = null;
         private void popUp()
         {
-            if (!popuplate())
+            /*if (!popuplate())
             {
                 Win11OSD.restore();
                 return;
-            }
+            }*/
             Win11OSD.hide();
 
             timer?.Dispose();

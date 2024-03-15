@@ -93,6 +93,10 @@ namespace VolumeMaster.volume
                 case nameof(AVolume.IsMuted):
                     notifyIsMutedChanged();
                     break;
+
+                case nameof(AVolume.IsActive):
+                    notifyIsActiveChanged();
+                    break;
                 default: break;
             }
 
@@ -103,6 +107,7 @@ namespace VolumeMaster.volume
         {
             get
             {
+                if (volume == null) return "";
                 if (!String.IsNullOrEmpty(customDisplayName)) return customDisplayName;
                 if (!String.IsNullOrEmpty(volume.Name)) return volume.Name;
                 if (!String.IsNullOrEmpty(volume.Name2)) return volume.Name2;
@@ -159,8 +164,8 @@ namespace VolumeMaster.volume
         {
             if (IsActive && PropertyChanged != null)
             {
-                PropertyChanged(this, new PropertyChangedEventArgs("Volume"));
-                PropertyChanged(this, new PropertyChangedEventArgs("SpeakerIcon"));
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(Volume)));
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(SpeakerIcon)));
             }
         }
 
@@ -168,10 +173,21 @@ namespace VolumeMaster.volume
         {
             if (IsActive && PropertyChanged != null)
             {
-                PropertyChanged(this, new PropertyChangedEventArgs("IsMuted"));
-                PropertyChanged(this, new PropertyChangedEventArgs("SpeakerIcon"));
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsMuted)));
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(SpeakerIcon)));
             }
         }
+
+        protected void notifyIsActiveChanged()
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsActive)));
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(Visibility)));
+
+            }
+        }
+
 
         static List<String> icons = [
             "SpeakerMute48", "Speaker048", "Speaker148","Speaker248"
@@ -188,6 +204,21 @@ namespace VolumeMaster.volume
                     > 0 => icons[2],
                     _ => icons[0],
                 };
+            }
+        }
+
+        public string Visibility
+        {
+            get
+            {
+                if (IsActive)
+                {
+                    return "Visible";
+                }
+                else
+                {
+                    return "Collapsed";
+                }
             }
         }
 

@@ -27,7 +27,7 @@
         <ItemsControl Name="VolumeList"  Grid.IsSharedSizeScope="True" Margin="10">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Grid>
+                    <Grid Visibility="{Binding Visibility}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" SharedSizeGroup="Col0" />
                             <ColumnDefinition Width="Auto" SharedSizeGroup="Col1" />
